@@ -1,8 +1,8 @@
 import axios from 'axios';
+import { log } from 'console';
 
 // Base URL de la API - usar variable de entorno
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://n8n.thepower.education/webhook';
-
+const API_BASE_URL = import.meta.env.VITE_REACT_API_BASE_URL;
 // Crear instancia de axios con configuración global
 const api = axios.create({
   baseURL: API_BASE_URL,
