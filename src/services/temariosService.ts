@@ -45,10 +45,8 @@ interface RevisionAPIResponse {
 }
 
 export const temariosService = {
-  // Obtener lista de revisiones
   async getMisTemarios(user: any): Promise<any[]> {
-    // En producción, esto sería:
     const response = await api.get<any>(`/mis-temarios?usuario_id=${user.id}`);
-    return response.data.dashboard_data;
+    return response?.data[0]?.dashboard_data;
   } 
 };

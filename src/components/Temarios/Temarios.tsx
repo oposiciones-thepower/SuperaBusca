@@ -19,6 +19,8 @@ export const Temarios = () => {
       try {
         setLoading(true);
         const data = await temariosService.getMisTemarios(user);
+        console.log(data);
+        
         setOposiciones(data);
       } catch (error) {
         toast({
