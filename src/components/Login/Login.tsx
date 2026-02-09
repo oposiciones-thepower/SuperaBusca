@@ -164,7 +164,7 @@ const Login: React.FC = () => {
           </motion.div>
 
           <motion.p className="login-footer" variants={itemVariants}>
-            © 2024 ThePower - Todos los derechos reservados
+            © {new Date().getFullYear()} ThePower - Todos los derechos reservados
           </motion.p>
         </motion.div>
       </AnimatePresence>
