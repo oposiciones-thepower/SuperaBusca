@@ -145,7 +145,7 @@ const AdminOposiciones: React.FC = () => {
       };
 
       const result = await oposicionesService.getOposicionesAdmin(filters);
-      setOposiciones(result.data);
+      setOposiciones([...result.data].sort((a, b) => b.id - a.id));
       setTotal(result.total);
     } catch (error) {
       message.error('Error cargando datos');
@@ -426,6 +426,8 @@ const AdminOposiciones: React.FC = () => {
       dataIndex: 'id',
       key: 'id',
       width: 170,
+      sorter: (a, b) => a.id - b.id,
+      defaultSortOrder: 'descend',
       render: (id) => <Text strong className="id-cell">#{id}</Text>
     },
     {
@@ -807,6 +809,21 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                <Divider style={{ margin: '8px 0' }} />
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={() => { setNewItemName(''); setAddProvinciaModal(true); }}
+                  className="add-option-btn"
+                  style={{ width: '100%', textAlign: 'left' }}
+                >
+                  Agregar
+                </Button>
+              </>
+            )}
           >
             {provincias.map(p => (
               <Option key={p.id} value={p.id}>{p.nombre}</Option>
@@ -824,6 +841,21 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                <Divider style={{ margin: '8px 0' }} />
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={() => { setNewItemName(''); setAddMunicipioModal(true); }}
+                  className="add-option-btn"
+                  style={{ width: '100%', textAlign: 'left' }}
+                >
+                  Agregar
+                </Button>
+              </>
+            )}
           >
             {municipios.map(m => (
               <Option key={m.id} value={m.id}>{m.nombre}</Option>
@@ -841,6 +873,21 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
+            dropdownRender={(menu) => (
+              <>
+                {menu}
+                <Divider style={{ margin: '8px 0' }} />
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  onClick={() => { setNewItemName(''); setAddCategoriaModal(true); }}
+                  className="add-option-btn"
+                  style={{ width: '100%', textAlign: 'left' }}
+                >
+                  Agregar
+                </Button>
+              </>
+            )}
           >
             {categorias.map(c => (
               <Option key={c.id} value={c.id}>{c.nombre}</Option>
