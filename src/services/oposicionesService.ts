@@ -31,6 +31,7 @@ interface CompararTemarioPayload {
 
 interface UpdateOposicionPayload {
   id: number;
+  titulo?: string;
   provincia_id?: number;
   categoria?: number;
   municipio_id?: number;

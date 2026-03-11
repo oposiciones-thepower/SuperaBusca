@@ -189,7 +189,10 @@ const AdminOposiciones: React.FC = () => {
         ? { id, url_bases_oficiales: editedRow.url_bases_oficiales }
         : {
             id,
+            titulo: editedRow.titulo,
             categoria: editedRow.categoria_id,
+            provincia_id: editedRow.provincia_id,
+            municipio_id: editedRow.municipio_id,
             tipo: editedRow.tipo,
             estado: editedRow.estado,
             url_bases_oficiales: editedRow.url_bases_oficiales,
@@ -345,6 +348,7 @@ const AdminOposiciones: React.FC = () => {
     }
   };
 
+
   const renderSelectWithAdd = (
     value: number | undefined,
     options: { id: number; nombre: string }[],
@@ -436,29 +440,62 @@ const AdminOposiciones: React.FC = () => {
       key: 'titulo',
       width: 220,
       ellipsis: true,
-      render: (titulo) => (
-        <Tooltip title={titulo}>
-          <Text className="title-cell">{titulo}</Text>
-        </Tooltip>
-      )
+      render: (_, record) => {
+        if (editingKey === record.id && !isProfesor) {
+          return (
+            <Input
+              value={editedRow.titulo}
+              onChange={(e) => handleFieldChange('titulo', e.target.value)}
+              className="admin-input"
+            />
+          );
+        }
+        return (
+          <Tooltip title={record.titulo}>
+            <Text className="title-cell">{record.titulo}</Text>
+          </Tooltip>
+        );
+      }
     },
     {
       title: 'Provincia',
       dataIndex: 'nombre_provincia',
       key: 'nombre_provincia',
-      width: 140,
-      render: (nombre) => <Tag className="tipo-tag">{nombre}</Tag>
+      width: 160,
+      render: (_, record) => {
+        if (editingKey === record.id && !isProfesor) {
+          return renderSelectWithAdd(
+            editedRow.provincia_id,
+            provincias,
+            'provincia_id',
+            () => setAddProvinciaModal(true),
+            'Seleccionar'
+          );
+        }
+        return <Tag className="tipo-tag">{record.nombre_provincia}</Tag>;
+      }
     },
     {
       title: 'Municipio',
       dataIndex: 'nombre_municipio',
       key: 'nombre_municipio',
-      width: 270,
-      render: (nombre) => nombre ? (
-        <Tag className="tipo-tag">{nombre}</Tag>
-      ) : (
-        <Text type="secondary">-</Text>
-      )
+      width: 200,
+      render: (_, record) => {
+        if (editingKey === record.id && !isProfesor) {
+          return renderSelectWithAdd(
+            editedRow.municipio_id,
+            municipios,
+            'municipio_id',
+            () => setAddMunicipioModal(true),
+            'Seleccionar'
+          );
+        }
+        return record.nombre_municipio ? (
+          <Tag className="tipo-tag">{record.nombre_municipio}</Tag>
+        ) : (
+          <Text type="secondary">-</Text>
+        );
+      }
     },
     {
       title: 'Categoría',
@@ -1277,6 +1314,7 @@ const AdminOposiciones: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+
     </motion.div>
   );
 };

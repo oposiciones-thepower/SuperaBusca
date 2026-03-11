@@ -23,5 +23,22 @@ export const municipiosService = {
       console.error('Error creando municipio:', error);
       throw error;
     }
+  },
+  async updateMunicipio(id: number, nombre: string): Promise<Municipio> {
+    try {
+      const response = await api.put<Municipio>(`/municipios/${id}`, { nombre });
+      return response.data;
+    } catch (error) {
+      console.error('Error actualizando municipio:', error);
+      throw error;
+    }
+  },
+  async deleteMunicipio(id: number): Promise<void> {
+    try {
+      await api.delete(`/municipios/${id}`);
+    } catch (error) {
+      console.error('Error eliminando municipio:', error);
+      throw error;
+    }
   }
 };
