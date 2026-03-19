@@ -15,6 +15,20 @@ export const recursosService = {
     }
   },
 
+  async uploadRelacionTemario(oposicionId: number, file: File): Promise<void> {
+    try {
+      const formData = new FormData();
+      formData.append('oposicion_id', oposicionId.toString());
+      formData.append('file', file);
+      await api.post('/subir-relacion-manual', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } catch (error) {
+      console.error('Error subiendo relación de temario:', error);
+      throw error;
+    }
+  },
+
   async getRecursosByOposicion(oposicionId: number): Promise<RecursoGet[]> {
     try {
       const response = await api.get<RecursosResponse[]>(

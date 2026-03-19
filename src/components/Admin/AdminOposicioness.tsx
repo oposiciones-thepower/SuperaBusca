@@ -32,7 +32,8 @@ import {
   LinkOutlined,
   CalendarOutlined,
   FileAddOutlined,
-  UploadOutlined
+  UploadOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { InputRef } from 'antd';
@@ -97,7 +98,7 @@ const AdminOposiciones: React.FC = () => {
   const [recursoForm] = Form.useForm();
   const [selectedOposicionId, setSelectedOposicionId] = useState<number | null>(null);
   const [uploadingRecurso, setUploadingRecurso] = useState(false);
-  const [recursoType, setRecursoType] = useState<'file' | 'url'>('file');
+  const [recursoType, setRecursoType] = useState<'file' | 'url' | 'relacion'>('file');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const inputRef = useRef<InputRef>(null);
@@ -267,29 +268,45 @@ const AdminOposiciones: React.FC = () => {
 
     setUploadingRecurso(true);
     try {
-      const formData = new FormData();
-      formData.append('oposicion_id', selectedOposicionId.toString());
-      formData.append('titulo', values.titulo);
-
-      if (recursoType === 'file') {
+      if (recursoType === 'relacion') {
         if (fileList.length === 0) {
-          message.error('Por favor seleccione un archivo');
+          message.error('Por favor seleccione un archivo PDF');
           setUploadingRecurso(false);
           return;
         }
-        formData.append('data', fileList[0].originFileObj as File);
+        const file = fileList[0].originFileObj as File;
+        if (file.type !== 'application/pdf') {
+          message.error('Solo se aceptan archivos PDF');
+          setUploadingRecurso(false);
+          return;
+        }
+        await recursosService.uploadRelacionTemario(selectedOposicionId, file);
+        message.success('Relación de temario cargada correctamente');
       } else {
-        if (!values.url) {
-          message.error('Por favor ingrese una URL');
-          setUploadingRecurso(false);
-          return;
+        const formData = new FormData();
+        formData.append('oposicion_id', selectedOposicionId.toString());
+        formData.append('titulo', values.titulo);
+
+        if (recursoType === 'file') {
+          if (fileList.length === 0) {
+            message.error('Por favor seleccione un archivo');
+            setUploadingRecurso(false);
+            return;
+          }
+          formData.append('data', fileList[0].originFileObj as File);
+        } else {
+          if (!values.url) {
+            message.error('Por favor ingrese una URL');
+            setUploadingRecurso(false);
+            return;
+          }
+          formData.append('url', values.url);
         }
-        formData.append('url', values.url);
+
+        await recursosService.uploadRecurso(formData);
+        message.success('Recurso agregado correctamente');
       }
 
-      await recursosService.uploadRecurso(formData);
-
-      message.success('Recurso agregado correctamente');
       setAddRecursoModal(false);
       recursoForm.resetFields();
       setFileList([]);
@@ -457,6 +474,16 @@ const AdminOposiciones: React.FC = () => {
           </Tooltip>
         );
       }
+    },
+    {
+      title: 'Estudiantes',
+      dataIndex: 'total_estudiantes',
+      key: 'total_estudiantes',
+      width: 100,
+      align: 'center' as const,
+      render: (val: number) => (
+        <Text>{val ?? 0}</Text>
+      )
     },
     {
       title: 'Provincia',
@@ -1060,13 +1087,15 @@ const AdminOposiciones: React.FC = () => {
           layout="vertical"
           onFinish={handleAddRecurso}
         >
-          <Form.Item
-            name="titulo"
-            label="Título del Recurso"
-            rules={[{ required: true, message: 'Ingrese el título del recurso' }]}
-          >
-            <Input placeholder="Ej: Temario oficial 2024" />
-          </Form.Item>
+          {recursoType !== 'relacion' && (
+            <Form.Item
+              name="titulo"
+              label="Título del Recurso"
+              rules={[{ required: true, message: 'Ingrese el título del recurso' }]}
+            >
+              <Input placeholder="Ej: Temario oficial 2024" />
+            </Form.Item>
+          )}
 
           <Form.Item label="Tipo de Recurso">
             <Radio.Group
@@ -1074,7 +1103,7 @@ const AdminOposiciones: React.FC = () => {
               onChange={(e) => {
                 setRecursoType(e.target.value);
                 setFileList([]);
-                recursoForm.setFieldsValue({ url: undefined });
+                recursoForm.setFieldsValue({ url: undefined, titulo: undefined });
               }}
             >
               <Radio.Button value="file">
@@ -1083,10 +1112,28 @@ const AdminOposiciones: React.FC = () => {
               <Radio.Button value="url">
                 <LinkOutlined /> Enlace URL
               </Radio.Button>
+              <Radio.Button value="relacion">
+                <FileTextOutlined /> Relación de Temario
+              </Radio.Button>
             </Radio.Group>
           </Form.Item>
 
-          {recursoType === 'file' ? (
+          {recursoType === 'relacion' ? (
+            <Form.Item label="Archivo PDF">
+              <Upload
+                beforeUpload={() => false}
+                fileList={fileList}
+                onChange={({ fileList }) => setFileList(fileList)}
+                accept=".pdf"
+                maxCount={1}
+              >
+                <Button icon={<UploadOutlined />}>Seleccionar PDF</Button>
+              </Upload>
+              <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
+                Solo se aceptan archivos PDF.
+              </Text>
+            </Form.Item>
+          ) : recursoType === 'file' ? (
             <Form.Item label="Archivo">
               <Upload
                 beforeUpload={() => false}
@@ -1124,7 +1171,7 @@ const AdminOposiciones: React.FC = () => {
                 Cancelar
               </Button>
               <Button type="primary" htmlType="submit" loading={uploadingRecurso}>
-                Agregar Recurso
+                {recursoType === 'relacion' ? 'Cargar la relación de temario' : 'Agregar Recurso'}
               </Button>
             </Space>
           </Form.Item>

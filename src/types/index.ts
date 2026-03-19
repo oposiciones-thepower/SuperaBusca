@@ -52,12 +52,14 @@ export interface OposicionData {
   id_oposicion: number;
   titulo_oposicion: string;
   estado_solicitud: string;
+  manual: boolean;
   temario: TemaTemario[];
 }
 
 export interface OposicionAdmin {
   id: number;
   titulo: string;
+  total_estudiantes?: number;
   num_plazas: number;
   url_bases_oficiales: string;
   fecha_convocatoria: string;

@@ -20,7 +20,8 @@ interface OposicionAPI {
   observaciones?: string;
   ccaa?: string;
   convocante?: string;
-  total_count?: string; // Agregar este campo
+  total_count?: string;
+  total_estudiantes?: string;
 }
 
 interface CompararTemarioPayload {
@@ -159,6 +160,7 @@ export const oposicionesService = {
         nombre_provincia: item.nombre_provincia,
         categoria_id: item.categoria_id,
         convocante: item.convocante || '',
+        total_estudiantes: item.total_estudiantes ? parseInt(item.total_estudiantes) : 0,
         nombre_categoria: item.nombre_categoria,
         tipo: item.tipo || 'Convocatoria',
         estado: item.estado || 'Abierto',

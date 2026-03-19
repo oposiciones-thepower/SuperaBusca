@@ -33,6 +33,7 @@ export const OposicionAccordion = ({ oposiciones }: OposicionAccordionProps) => 
           oposiciones.length > 0 &&
           oposiciones.map((oposicion, index) => {
             const isOpen = openId === oposicion.id_oposicion;
+            const isDisabled = oposicion.manual === true;
 
             return (
               <motion.div
@@ -40,15 +41,15 @@ export const OposicionAccordion = ({ oposiciones }: OposicionAccordionProps) => 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
-                className="oposicion-card-accordion"
+                className={`oposicion-card-accordion${isDisabled ? ' oposicion-card-disabled' : ''}`}
               >
-                <button
-                  className="oposicion-trigger"
-                  data-state={isOpen ? 'open' : 'closed'}
-                  onClick={() => toggleAccordion(oposicion.id_oposicion)}
-                  aria-expanded={isOpen}
-                >
-                  <div className="oposicion-header-content">
+                <div className="oposicion-trigger" data-state={isOpen ? 'open' : 'closed'}>
+                  <button
+                    className="oposicion-trigger-clickable"
+                    onClick={() => !isDisabled && toggleAccordion(oposicion.id_oposicion)}
+                    aria-expanded={isOpen}
+                    style={isDisabled ? { cursor: 'not-allowed', opacity: 0.5, flex: 1, background: 'none', border: 'none', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between' } : { flex: 1, background: 'none', border: 'none', textAlign: 'left', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+                  >
                     <div>
                       <h3 className="oposicion-title">
                         {oposicion.titulo_oposicion}
@@ -60,16 +61,16 @@ export const OposicionAccordion = ({ oposiciones }: OposicionAccordionProps) => 
                         </span>
                       </div>
                     </div>
+                    <ChevronDown className="oposicion-chevron" />
+                  </button>
 
-                    <Button 
-                      size="large"
-                      onClick={(e) => handleVerRecursos(oposicion, e)}
-                    >
-                      Ver Recursos
-                    </Button>
-                  </div>
-                  <ChevronDown className="oposicion-chevron" />
-                </button>
+                  <Button
+                    size="large"
+                    onClick={(e) => handleVerRecursos(oposicion, e)}
+                  >
+                    Ver Recursos
+                  </Button>
+                </div>
 
                 <AnimatePresence>
                   {isOpen && (
