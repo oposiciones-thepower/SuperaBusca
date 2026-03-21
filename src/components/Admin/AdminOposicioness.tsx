@@ -20,7 +20,9 @@ import {
   InputNumber,
   Upload,
   Radio,
-  Tabs
+  Tabs,
+  ConfigProvider,
+  theme
 } from 'antd';
 import {
   PlusOutlined,
@@ -386,12 +388,12 @@ const AdminOposiciones: React.FC = () => {
     return (
       <Select
         showSearch
-        optionFilterProp="children"
         value={value}
         onChange={(val) => handleFieldChange(field, val)}
         className="admin-select"
         placeholder={placeholder}
-        popupClassName="admin-select-dropdown"
+        classNames={{ popup: { root: 'admin-select-dropdown' } }}
+        // @ts-ignore — dropdownRender deprecated in AntD v6 types but no functional replacement exists
         dropdownRender={(menu) => (
           <>
             {menu}
@@ -587,8 +589,7 @@ const AdminOposiciones: React.FC = () => {
           return (
             <Select
               showSearch
-              optionFilterProp="children"
-              value={editedRow.tipo}
+                    value={editedRow.tipo}
               onChange={(val) => handleFieldChange('tipo', val)}
               className="admin-select"
             >
@@ -618,8 +619,7 @@ const AdminOposiciones: React.FC = () => {
           return (
             <Select
               showSearch
-              optionFilterProp="children"
-              value={editedRow.estado}
+                    value={editedRow.estado}
               onChange={(val) => handleFieldChange('estado', val)}
               className="admin-select"
             >
@@ -909,8 +909,7 @@ const AdminOposiciones: React.FC = () => {
 
           <Select
             showSearch
-            optionFilterProp="children"
-            placeholder="Provincia"
+                placeholder="Provincia"
             value={filterProvincia}
             onChange={(value) => {
               setFilterProvincia(value);
@@ -918,7 +917,8 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
-            dropdownRender={(menu) => (
+            // @ts-ignore — dropdownRender deprecated in AntD v6 types but no functional replacement exists
+        dropdownRender={(menu) => (
               <>
                 {menu}
                 <Divider style={{ margin: '8px 0' }} />
@@ -941,8 +941,7 @@ const AdminOposiciones: React.FC = () => {
 
           <Select
             showSearch
-            optionFilterProp="children"
-            placeholder="Municipio"
+                placeholder="Municipio"
             value={filterMunicipio}
             onChange={(value) => {
               setFilterMunicipio(value);
@@ -950,7 +949,8 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
-            dropdownRender={(menu) => (
+            // @ts-ignore — dropdownRender deprecated in AntD v6 types but no functional replacement exists
+        dropdownRender={(menu) => (
               <>
                 {menu}
                 <Divider style={{ margin: '8px 0' }} />
@@ -973,8 +973,7 @@ const AdminOposiciones: React.FC = () => {
 
           <Select
             showSearch
-            optionFilterProp="children"
-            placeholder="Categoría"
+                placeholder="Categoría"
             value={filterCategoria}
             onChange={(value) => {
               setFilterCategoria(value);
@@ -982,7 +981,8 @@ const AdminOposiciones: React.FC = () => {
             }}
             className="filter-select-sm"
             allowClear
-            dropdownRender={(menu) => (
+            // @ts-ignore — dropdownRender deprecated in AntD v6 types but no functional replacement exists
+        dropdownRender={(menu) => (
               <>
                 {menu}
                 <Divider style={{ margin: '8px 0' }} />
@@ -1005,8 +1005,7 @@ const AdminOposiciones: React.FC = () => {
 
           <Select
             showSearch
-            optionFilterProp="children"
-            placeholder="Estado"
+                placeholder="Estado"
             value={filterEstado}
             onChange={(value) => {
               setFilterEstado(value);
@@ -1022,8 +1021,7 @@ const AdminOposiciones: React.FC = () => {
 
           <Select
             showSearch
-            optionFilterProp="children"
-            placeholder="Tipo"
+                placeholder="Tipo"
             value={filterTipo}
             onChange={(value) => {
               setFilterTipo(value);
@@ -1101,10 +1099,21 @@ const AdminOposiciones: React.FC = () => {
         width={600}
         className="admin-modal"
       >
+        <ConfigProvider
+          theme={{
+            algorithm: theme.defaultAlgorithm,
+            token: { colorBgContainer: '#ffffff', colorText: '#1a2332', colorTextPlaceholder: '#9ca3af', colorBorder: '#d1d5db', colorPrimary: '#5BE4EB' },
+            components: {
+              Input: { colorBgContainer: '#ffffff', colorText: '#1a2332' },
+              Select: { colorBgContainer: '#ffffff', optionSelectedBg: 'rgba(91, 228, 235, 0.15)' },
+            },
+          }}
+        >
         <Form
           form={recursoForm}
           layout="vertical"
           onFinish={handleAddRecurso}
+          className="modal-form-light"
         >
           {recursoType !== 'relacion' && (
             <Form.Item
@@ -1112,7 +1121,7 @@ const AdminOposiciones: React.FC = () => {
               label="Título del Recurso"
               rules={[{ required: true, message: 'Ingrese el título del recurso' }]}
             >
-              <Input placeholder="Ej: Temario oficial 2024" />
+              <Input placeholder="Ej: Temario oficial 2024" style={{ background: '#fff', color: '#1a2332' }} />
             </Form.Item>
           )}
 
@@ -1175,7 +1184,7 @@ const AdminOposiciones: React.FC = () => {
                 { type: 'url', message: 'Ingrese una URL válida' }
               ]}
             >
-              <Input placeholder="https://ejemplo.com/recurso.pdf" />
+              <Input placeholder="https://ejemplo.com/recurso.pdf" style={{ background: '#fff', color: '#1a2332' }} />
             </Form.Item>
           )}
 
@@ -1195,6 +1204,7 @@ const AdminOposiciones: React.FC = () => {
             </Space>
           </Form.Item>
         </Form>
+        </ConfigProvider>
       </Modal>
 
       {/* Modal para crear oposición */}
@@ -1209,17 +1219,36 @@ const AdminOposiciones: React.FC = () => {
         width={700}
         className="admin-modal"
       >
+        <ConfigProvider
+          theme={{
+            algorithm: theme.defaultAlgorithm,
+            token: {
+              colorBgContainer: '#ffffff',
+              colorText: '#1a2332',
+              colorTextPlaceholder: '#9ca3af',
+              colorBorder: '#d1d5db',
+              colorPrimary: '#5BE4EB',
+            },
+            components: {
+              Input: { colorBgContainer: '#ffffff', colorText: '#1a2332' },
+              Select: { colorBgContainer: '#ffffff', optionSelectedBg: 'rgba(91, 228, 235, 0.15)' },
+              DatePicker: { colorBgContainer: '#ffffff' },
+              InputNumber: { colorBgContainer: '#ffffff' },
+            },
+          }}
+        >
         <Form
           form={createForm}
           layout="vertical"
           onFinish={handleCreateOposicion}
+          className="modal-form-light"
         >
           <Form.Item
             name="provincia_id"
             label="Provincia"
             rules={[{ required: true, message: 'Seleccione una provincia' }]}
           >
-            <Select showSearch optionFilterProp="children" placeholder="Seleccionar provincia">
+            <Select showSearch placeholder="Seleccionar provincia">
               {provincias.map(p => (
                 <Option key={p.id} value={p.id}>{p.nombre}</Option>
               ))}
@@ -1230,7 +1259,7 @@ const AdminOposiciones: React.FC = () => {
             name="municipio_id"
             label="Municipio"
           >
-            <Select showSearch optionFilterProp="children" placeholder="Seleccionar municipio" allowClear>
+            <Select showSearch placeholder="Seleccionar municipio" allowClear>
               {municipios.map(m => (
                 <Option key={m.id} value={m.id}>{m.nombre}</Option>
               ))}
@@ -1242,7 +1271,7 @@ const AdminOposiciones: React.FC = () => {
             label="Categoría"
             rules={[{ required: true, message: 'Seleccione una categoría' }]}
           >
-            <Select showSearch optionFilterProp="children" placeholder="Seleccionar categoría">
+            <Select showSearch placeholder="Seleccionar categoría">
               {categorias.map(c => (
                 <Option key={c.id} value={c.id}>{c.nombre}</Option>
               ))}
@@ -1254,14 +1283,14 @@ const AdminOposiciones: React.FC = () => {
             label="Convocante"
             rules={[{ required: true, message: 'Ingrese el convocante' }]}
           >
-            <Input placeholder="Ej: Ayuntamiento de Madrid" />
+            <Input placeholder="Ej: Ayuntamiento de Madrid" style={{ background: '#fff', color: '#1a2332' }} />
           </Form.Item>
 
           <Form.Item
             name="ccaa"
             label="CCAA"
           >
-            <Input placeholder="Comunidad Autónoma" />
+            <Input placeholder="Comunidad Autónoma" style={{ background: '#fff', color: '#1a2332' }} />
           </Form.Item>
 
           <Form.Item
@@ -1277,7 +1306,7 @@ const AdminOposiciones: React.FC = () => {
             label="Tipo"
             rules={[{ required: true, message: 'Seleccione el tipo' }]}
           >
-            <Select showSearch optionFilterProp="children">
+            <Select showSearch>
               {TIPOS_OPOSICION.map(tipo => (
                 <Option key={tipo} value={tipo}>{tipo}</Option>
               ))}
@@ -1289,7 +1318,7 @@ const AdminOposiciones: React.FC = () => {
             label="Estado"
             rules={[{ required: true, message: 'Seleccione el estado' }]}
           >
-            <Select showSearch optionFilterProp="children">
+            <Select showSearch>
               {ESTADOS_OPOSICION.map(estado => (
                 <Option key={estado} value={estado}>{estado}</Option>
               ))}
@@ -1304,7 +1333,7 @@ const AdminOposiciones: React.FC = () => {
               { type: 'url', message: 'Ingrese una URL válida' }
             ]}
           >
-            <Input placeholder="https://..." />
+            <Input placeholder="https://..." style={{ background: '#fff', color: '#1a2332' }} />
           </Form.Item>
 
           <Form.Item
@@ -1326,7 +1355,7 @@ const AdminOposiciones: React.FC = () => {
             name="observaciones"
             label="Observaciones"
           >
-            <TextArea rows={3} placeholder="Observaciones adicionales..." />
+            <TextArea rows={3} placeholder="Observaciones adicionales..." style={{ background: '#fff', color: '#1a2332' }} />
           </Form.Item>
 
           <Form.Item>
@@ -1343,6 +1372,7 @@ const AdminOposiciones: React.FC = () => {
             </Space>
           </Form.Item>
         </Form>
+        </ConfigProvider>
       </Modal>
 
       {/* Modales de provincia, municipio y categoría (sin cambios) */}

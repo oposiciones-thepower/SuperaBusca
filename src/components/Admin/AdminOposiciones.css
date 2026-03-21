@@ -315,13 +315,33 @@
 }
 
 .admin-modal .ant-modal-title {
-  color: #5BE4EB;
   font-weight: 600;
+  color: #1a2332 !important;
 }
 
 .admin-modal .ant-btn-primary {
   background: linear-gradient(135deg, #5BE4EB 0%, #3ABBC2 100%);
   border: none;
+}
+
+/* Light form inside white modals */
+.modal-form-light .ant-input,
+.modal-form-light .ant-input-affix-wrapper,
+.modal-form-light textarea.ant-input,
+.modal-form-light .ant-input-number,
+.modal-form-light .ant-input-number-input {
+  background: #ffffff !important;
+  color: #1a2332 !important;
+}
+
+.modal-form-light .ant-input::placeholder,
+.modal-form-light .ant-input-number-input::placeholder,
+.modal-form-light textarea.ant-input::placeholder {
+  color: #9ca3af !important;
+}
+
+.modal-form-light .ant-form-item-label > label {
+  color: #374151 !important;
 }
 
 /* Dropdown styles */

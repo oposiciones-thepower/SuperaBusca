@@ -37,10 +37,18 @@ const OpoApp: React.FC = () => {
           Input: {
             activeBorderColor: '#5BE4EB',
             hoverBorderColor: '#8AEEF3',
-             colorBgContainer: '#16253A',
+            colorBgContainer: '#16253A',
           },
           Select: {
             optionSelectedBg: 'rgba(91, 228, 235, 0.2)',
+          },
+          Modal: {
+            contentBg: '#ffffff',
+            headerBg: '#ffffff',
+            titleColor: '#1a2332',
+            colorText: '#1a2332',
+            colorIcon: '#1a2332',
+            colorIconHover: '#5BE4EB',
           },
         },
       }}
